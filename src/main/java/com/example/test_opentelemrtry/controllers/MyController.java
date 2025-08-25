@@ -39,15 +39,14 @@ public class MyController {
     @Traceable
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // try {
-        // myService.registerUser(user);
-        // return ResponseEntity.ok(user);
-        // } catch (Exception e) {
-        // Map<String, String> body = new HashMap<>();
-        // body.put("error", e.getMessage());
-        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-        // }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        try {
+        myService.registerUser(user);
+        return ResponseEntity.ok(user);
+        } catch (Exception e) {
+        Map<String, String> body = new HashMap<>();
+        body.put("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+        }
     }
 
     @Traceable
