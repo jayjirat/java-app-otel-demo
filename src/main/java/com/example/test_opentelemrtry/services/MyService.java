@@ -9,9 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.example.test_opentelemrtry.aop.Traceable;
 import com.example.test_opentelemrtry.dto.TransferDto;
@@ -22,9 +20,9 @@ import com.example.test_opentelemrtry.utils.UtilA;
 import com.example.test_opentelemrtry.utils.UtilB;
 
 import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
-import io.opentelemetry.api.metrics.DoubleHistogram;
 
 @Service
 public class MyService {
@@ -73,8 +71,8 @@ public class MyService {
         // .setParent(Context.current())
         // .startSpan();
 
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8001/components";
+        // RestTemplate restTemplate = new RestTemplate();
+        // String url = "http://localhost:8001/components";
 
         int num = ThreadLocalRandom.current().nextInt(1, 6);
         num *= 1000;
@@ -83,11 +81,11 @@ public class MyService {
             Thread.sleep(num);
             String dataA = utilA.compute();
             String dataB = utilB.compute();
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            String message = dataA + dataB + response.getBody();
+            // ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            // String message = dataA + dataB + response.getBody();
             List<User> users = userRepository.findAllWithProfile();
 
-            body.put("message", message);
+            body.put("message", dataA + dataB);
             body.put("users", users);
 
             return body;
