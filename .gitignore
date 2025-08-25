@@ -1,0 +1,71 @@
+### Maven ###
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+*.idea/workspace.xml
+
+### NetBeans ###
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### pg data ###
+postgres_data
+
+### Spring Boot ###
+.springBeans
+.sts4-cache
+
+### Miscellaneous ###
+HELP.md
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.exe
+*.dll
+*.so
+*.a
+*.o
+*.obj
+*.lib
+*.bin
+*.log
+*.tmp
+*.tmp.*
+*.bak
+*.backup
+*.swp
+*.swo
+*.swn
+*.swo
+*.swn
+*.swo
+*.swn
+
+### Operating System ###
+.DS_Store
+ehthumbs.db
+Thumbs.db
