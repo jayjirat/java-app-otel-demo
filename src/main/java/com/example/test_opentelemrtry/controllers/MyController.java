@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.test_opentelemrtry.aop.Traceable;
-import com.example.test_opentelemrtry.dto.TransferDto;
+import com.example.test_opentelemrtry.dto.TransferRequestDto;
+import com.example.test_opentelemrtry.dto.TransferResponseDto;
 import com.example.test_opentelemrtry.models.User;
 import com.example.test_opentelemrtry.services.MyService;
 
@@ -51,15 +52,23 @@ public class MyController {
 
     @Traceable
     @PostMapping("/transfer")
-    public ResponseEntity<?> transferBalance(@RequestBody List<TransferDto> transferDtos) {
-
+    public ResponseEntity<?> transferBalance(@RequestBody List<TransferRequestDto> transferDtos) {
+        TransferResponseDto response = new TransferResponseDto();
         try {
-            myService.transferBalance(transferDtos);
-            return ResponseEntity.ok().build();
+            String transactionId = myService.transferBalance(transferDtos);
+
+            response.setStatus("success");
+            response.setMessage(null);
+            response.setTransactionId(transactionId);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+
+            response.setStatus("error");
+            response.setMessage(e.getMessage());
+            response.setTransactionId(null);
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

@@ -6,13 +6,14 @@ import java.lang.management.MemoryUsage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.test_opentelemrtry.aop.Traceable;
-import com.example.test_opentelemrtry.dto.TransferDto;
+import com.example.test_opentelemrtry.dto.TransferRequestDto;
 import com.example.test_opentelemrtry.models.Profile;
 import com.example.test_opentelemrtry.models.User;
 import com.example.test_opentelemrtry.repositories.UserRepository;
@@ -23,6 +24,7 @@ import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
+import io.opentelemetry.api.trace.Span;
 
 @Service
 public class MyService {
@@ -129,10 +131,10 @@ public class MyService {
     }
 
     @Traceable
-    public void transferBalance(List<TransferDto> transferDtos) throws Exception {
+    public String transferBalance(List<TransferRequestDto> transferDtos) throws Exception {
 
         try {
-            for (TransferDto transferDto : transferDtos) {
+            for (TransferRequestDto transferDto : transferDtos) {
                 User fromUser = userRepository.findById(transferDto.getFromId())
                         .orElseThrow(() -> new Exception("From user not found"));
                 User toUser = userRepository.findById(transferDto.getToId())
@@ -146,11 +148,18 @@ public class MyService {
 
                 userRepository.save(fromUser);
                 userRepository.save(toUser);
+
+                
             }
             transferRequests.add(transferDtos.size());
             MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
             MemoryUsage heap = memoryBean.getHeapMemoryUsage();
             memoryHistogram.record(heap.getUsed());
+            String transactionId = UUID.randomUUID().toString();
+
+            Span.current().setAttribute("transaction.id", transactionId);
+
+            return transactionId;
         } catch (Exception e) {
             throw new Exception(e);
         }

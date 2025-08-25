@@ -1,6 +1,6 @@
 package com.example.test_opentelemrtry.dto;
 
-public class TransferDto {
+public class TransferRequestDto {
     public Long fromId;
     public Long toId;
     public double amount;
