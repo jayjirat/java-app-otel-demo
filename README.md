@@ -95,12 +95,14 @@ If you don't have an OpenTelemetry Collector running yet, you can use a complete
 🔗 **https://github.com/jayjirat/observation-stack**
 
 This repository provides a ready-to-use Docker Compose setup that includes:
+
 - **OpenTelemetry Collector** - Data collection and processing
 - **Jaeger** - Distributed tracing visualization
 - **Prometheus** - Metrics collection and storage
 - **Grafana** - Dashboards and monitoring visualization
 
 Simply clone the repository and run:
+
 ```bash
 git clone https://github.com/jayjirat/observation-stack
 cd observation-stack
@@ -108,13 +110,92 @@ docker compose up -d
 ```
 
 The collector will be available on:
+
 - HTTP: `http://localhost:4318` (for this demo)
 - gRPC: `http://localhost:4317`
 
 Once the stack is running, you can access:
+
 - **Jaeger UI**: http://localhost:16686 (for traces)
 - **Grafana**: http://localhost:3000 (for metrics and dashboards)
 - **Prometheus**: http://localhost:9090 (for raw metrics)
+
 ---
 
 _This demo showcases the power of OpenTelemetry's auto-instrumentation capabilities with Spring Boot applications._
+
+## 🧪 Test API to Generate Telemetry Data
+
+### Testing Endpoints to Produce Metrics and Traces
+
+Once the application is running, test these endpoints to generate OpenTelemetry metrics and traces. Use tools like **Postman**, **curl**, or any HTTP client:
+
+#### 1. Get All Users
+
+```http
+GET http://localhost:8000/api/users
+```
+
+#### 2. Register New User
+
+```http
+POST http://localhost:8000/register
+Content-Type: application/json
+
+{
+  "email": "email@example.com"
+}
+```
+
+#### 3. Transfer Money (Batch Transaction)
+
+```http
+POST http://localhost:8000/transfer
+Content-Type: application/json
+
+[
+  {
+    "fromId": 45,
+    "toId": 43,
+    "amount": 99
+  },
+  {
+    "fromId": 45,
+    "toId": 44,
+    "amount": 100
+  },
+  {
+    "fromId": 45,
+    "toId": 46,
+    "amount": 100
+  }
+]
+```
+
+**Requirements:**
+
+- `fromId` and `toId` must exist in the database
+- If any user ID doesn't exist, the entire transaction will fail with an error
+
+### 💡 Testing Purpose
+
+The goal is to **generate telemetry data** that you can observe in:
+
+- **Jaeger UI** - View distributed traces and spans
+- **Grafana** - Monitor metrics and performance dashboards
+- **Prometheus** - Check raw metrics data
+
+1. **Start with user registration** to create test data and see database traces
+2. **Call get users** to generate HTTP request metrics
+3. **Test transfers** to see complex transaction traces and error handling
+4. **Use invalid user IDs** to generate error traces and metrics
+
+### 📊 Expected Telemetry Output
+
+After testing these endpoints, you should see:
+
+- **HTTP request spans** with response times and status codes
+- **Database query spans** showing SQL execution times
+- **Transaction spans** for money transfer operations
+- **Error spans and metrics** when using invalid user IDs
+- **Performance metrics** like request count, duration, and throughput
